@@ -12,6 +12,7 @@ class CustomUserSerializer(UserSerializer):
 
     class Meta:
         model = User
+        fields = '__all__'
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
@@ -23,4 +24,13 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         model = Subscription
         fields = (
             # TODO
+            'course',
+            'student',
         )
+
+    def to_representation(self, instance):
+        """Изменяем представление данных."""
+        representation = super().to_representation(instance)
+        representation['course'] = str(instance.course)
+        representation['student'] = str(instance.student)
+        return representation

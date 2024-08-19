@@ -17,8 +17,16 @@ class Course(models.Model):
         auto_now_add=False,
         verbose_name='Дата и время начала курса'
     )
-
     # TODO
+    price = models.PositiveIntegerField(
+        help_text='Укажите стоимость курса',
+        default=0,
+        verbose_name='Стоимость',
+    )
+    is_available = models.BooleanField(
+        default=True,
+        verbose_name='Курс доступен',
+    )
 
     class Meta:
         verbose_name = 'Курс'
@@ -42,6 +50,12 @@ class Lesson(models.Model):
     )
 
     # TODO
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name='lessons',
+        verbose_name='Курс',
+    )
 
     class Meta:
         verbose_name = 'Урок'

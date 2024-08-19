@@ -1,5 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.validators import MinValueValidator
+
+from courses.models import Course
+
 
 class CustomUser(AbstractUser):
     """Кастомная модель пользователя - студента."""
@@ -30,6 +34,21 @@ class Balance(models.Model):
     """Модель баланса пользователя."""
 
     # TODO
+    user = models.OneToOneField(
+        CustomUser,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+    )
+    bonus_balance = models.PositiveIntegerField(
+        verbose_name='Баланс бонусов',
+        default=1000,
+        validators=(
+            MinValueValidator(
+                0,
+                message='Значение должно быть больше 0.'
+            ),
+        )
+    )
 
     class Meta:
         verbose_name = 'Баланс'
@@ -41,9 +60,26 @@ class Subscription(models.Model):
     """Модель подписки пользователя на курс."""
 
     # TODO
+    student = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        verbose_name='Стдуент',
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        verbose_name='Курс',
+    )
 
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         ordering = ('-id',)
+        default_related_name = 'subscriptions'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('student', 'course'),
+                name='Unique_student_course',
+            ),
+        )
 
