@@ -26,11 +26,4 @@ class UserAdmin(admin.ModelAdmin):
         'first_name',
         'last_name',
     )
-    #
-    # @admin.display(description='Кол-во рецептов')
-    # def recipes_count(self, obj):
-    #     return obj.recipes.count()
-    #
-    # @admin.display(description='Кол-во подписчиков')
-    # def subscribers_count(self, obj):
-    #     return obj.subscription_as_author.count()
+

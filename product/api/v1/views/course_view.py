@@ -81,25 +81,19 @@ class CourseViewSet(viewsets.ModelViewSet):
         # TODO
         course = get_object_or_404(Course, pk=pk)
         user = request.user
-        if Subscription.objects.filter(
-                student=user,
-                course=course,
-        ).exists():
+        if course.is_available is not True:
             return Response(
-                {'detail': 'Вы уже купили на этот курс.'},
+                {'detail': 'Этот курс недоступен для покупки.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
         balance, created = Balance.objects.get_or_create(user=user)
         if balance.bonus_balance < course.price:
             return Response(
                 {'detail': 'Недостаточно средств на счете.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
         balance.bonus_balance -= course.price
         balance.save()
-
         data = {'course': pk, 'student': user.id}
         serializer = SubscriptionSerializer(
             data=data,
