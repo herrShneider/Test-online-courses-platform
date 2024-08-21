@@ -82,4 +82,3 @@ class Subscription(models.Model):
                 name='Unique_student_course',
             ),
         )
-

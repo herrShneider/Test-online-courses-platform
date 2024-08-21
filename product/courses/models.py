@@ -1,7 +1,5 @@
 from django.db import models
 
-# from users.models import CustomUser
-
 
 class Course(models.Model):
     """Модель продукта - курса."""
@@ -92,4 +90,3 @@ class Group(models.Model):
         verbose_name = 'Группа'
         verbose_name_plural = 'Группы'
         ordering = ('-id',)
-

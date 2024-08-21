@@ -2,11 +2,13 @@ from django.contrib.auth import get_user_model
 from django.db.models import Avg, Count
 from rest_framework import serializers
 
-# from courses.models import Course, CourseStudent, Group, Lesson
 from courses.models import Course, Group, Lesson
-from users.models import Subscription
 
 User = get_user_model()
+
+
+AVG_NUM_STUDENTS_IN_GROUP = 30
+PERCENTAGE_COEFF = 100
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -95,15 +97,29 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_students_count(self, obj):
         """Общее количество студентов на курсе."""
         # TODO Доп. задание
-        # return obj.students.count()
+        return obj.subscriptions.count()
 
     def get_groups_filled_percent(self, obj):
-        """Процент заполнения групп, если в группе максимум 30 чел.."""
+        """Процент заполнения групп, если в группе максимум 30 чел."""
         # TODO Доп. задание
+        students_count__avg = obj.groups.annotate(
+            students_count=Count('students')
+        ).aggregate(
+            Avg('students_count',
+                default=0)
+        )['students_count__avg']
+        return round(
+            students_count__avg * PERCENTAGE_COEFF /
+            AVG_NUM_STUDENTS_IN_GROUP
+        )
 
     def get_demand_course_percent(self, obj):
         """Процент приобретения курса."""
         # TODO Доп. задание
+        return round(
+            obj.subscriptions.count() * PERCENTAGE_COEFF /
+            User.objects.all().count()
+        )
 
     class Meta:
         model = Course
@@ -128,4 +144,3 @@ class CreateCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
-        # exclude = ('students',)

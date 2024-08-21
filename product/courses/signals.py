@@ -21,7 +21,8 @@ def post_save_subscription(sender, instance: Subscription, created, **kwargs):
         for group_number in range(1, 11):
             Group.objects.get_or_create(
                 course=course,
-                name=f'Группа номер {group_number}. Курс {course.title}.'
+                name=f'Группа номер {group_number}. '
+                     f'Курс {course.title}.'
             )
 
         smallest_group = Group.objects.filter(

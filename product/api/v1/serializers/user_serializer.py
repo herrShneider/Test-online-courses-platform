@@ -3,7 +3,6 @@ from djoser.serializers import UserSerializer
 from rest_framework import serializers
 
 from users.models import Subscription
-# from courses.models import Subscription
 
 User = get_user_model()
 
@@ -30,10 +29,20 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, data):
+        """
+        Проверяет, существует ли уже подписка на данный курс
+        для текущего пользователя.
+
+        """
         user = self.context['request'].user
         course = data.get('course')
-        if Subscription.objects.filter(student=user, course=course).exists():
-            raise serializers.ValidationError("Вы уже купили этот курс.")
+        if Subscription.objects.filter(
+                student=user,
+                course=course
+        ).exists():
+            raise serializers.ValidationError(
+                'Вы уже купили этот курс.'
+            )
         return data
 
     def to_representation(self, instance):

@@ -12,7 +12,7 @@ from api.v1.serializers.course_serializer import (CourseSerializer,
                                                   LessonSerializer)
 from api.v1.serializers.user_serializer import SubscriptionSerializer
 from courses.models import Course
-from users.models import Balance, Subscription
+from users.models import Balance
 
 
 class LessonViewSet(viewsets.ModelViewSet):
